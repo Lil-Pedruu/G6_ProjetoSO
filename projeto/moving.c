@@ -10,6 +10,8 @@ struct termios newtc;
 
 static int *pos;
 static char tecla[128];
+static char *p = NULL;
+static int cursorType=0;
 
 /*Cria estruturas termios para armazenar os parametros e
 informações do terminal*/
@@ -58,7 +60,11 @@ void nocbreak() {
 int *up(int **maze, int *pos){
    pos[1]++; //soma 1 à posição anterior
    if (maze[pos[1]-1][pos[0]-1] != 1){
+      printf(" ");
+      printf("\033[%dD",1); // movimenta para a esquerda
       printf("\033[%dA",1); // movimenta para cima
+      printf("^");
+      printf("\033[%dD",1); // movimenta para a esquerda
    }
    else{
       pos[1]--; // caso a posição seguinte for uma parede é subtraido 1
@@ -69,7 +75,11 @@ int *up(int **maze, int *pos){
 int *down(int **maze, int *pos){
    pos[1]--;
    if (maze[pos[1]-1][pos[0]-1] != 1){
+      printf(" ");
+      printf("\033[%dD",1); // movimenta para a esquerda
       printf("\033[%dB",1); // movimenta para baixo
+      printf("v");
+      printf("\033[%dD",1); // movimenta para a esquerda
    }
    else{
       pos[1]++;
@@ -80,7 +90,12 @@ int *down(int **maze, int *pos){
 int *right(int **maze, int *pos){
    pos[0]++;
    if (maze[pos[1]-1][pos[0]-1] != 1){
-   printf("\033[%dC",1); // movimenta para a direita
+     printf(" ");
+     printf("\033[%dD",1); // movimenta para a esquerda
+     printf("\033[%dC",1); // movimenta para a direita
+     printf(">");
+     printf("\033[%dD",1); // movimenta para a esquerda
+
    }
    else{
       pos[0]--;
@@ -91,6 +106,10 @@ int *right(int **maze, int *pos){
 int *left(int **maze, int *pos){
    pos[0]--;
    if (maze[pos[1]-1][pos[0]-1] != 1){
+      printf(" ");
+      printf("\033[%dD",1); // movimenta para a esquerda
+      printf("\033[%dD",1); // movimenta para a esquerda
+      printf("<");
       printf("\033[%dD",1); // movimenta para a esquerda
    }
    else{
@@ -99,22 +118,74 @@ int *left(int **maze, int *pos){
    return pos;
 }
 
-void firstMode(int **maze, char tecla){ // 4 teclas.
 
-      if(tecla==119 || tecla == 87){  // Estes números corresponde a caracteres da tabela ASCII
-            pos = up(maze, pos);
-      }
+
+int virarDireita(int **maze, int cursorType){
+
+    if(cursorType==0){ // type 0 = ^
+      printf(" ");
+      printf("\033[%dD",1); // movimenta para a esquerda
+      printf(">");
+      printf("\033[%dD",1); // movimenta para a esquerda
+
+    }
+
+    else if(cursorType==1){
+     printf(" ");
+     printf("\033[%dD",1); // movimenta para a esquerda
+     printf("v");
+     printf("\033[%dD",1); // movimenta para a esquerda
+
+   }
+
+   else if(cursorType==2){
+     printf(" ");
+     printf("\033[%dD",1); // movimenta para a esquerda
+     printf("<");
+     printf("\033[%dD",1); // movimenta para a esquerda
+
+   }
+
+   else if(cursorType==3){
+     printf(" ");
+     printf("\033[%dD",1); // movimenta para a esquerda
+     printf("^");
+     printf("\033[%dD",1); // movimenta para a esquerda
+   }
+
+   return cursorType;
+}
+/*int *forward(int **maze, int*pos){
+  return null;
+}*/
+
+void firstMode(int **maze, char tecla){ /* 3 teclas.
+                                        (virar direita, virar esquerda
+                                         e ir em frente) */
+
+  //    if(tecla==32){  /* Estes números decimais correspondem a caracteres da
+                                                              //  tabela ASCII */
+        //    pos = forward(maze, pos);
+//      }
 
       if(tecla==100 || tecla == 68){
-            pos = right(maze, pos);
+            virarDireita(maze, cursorType);
+            (cursorType)++;
+            if(cursorType==4){
+              cursorType=0;
+            }
       }
 
-      if(tecla==97 || tecla == 65){
-            pos = left(maze, pos);
-      }
+
+
+    /*  if(tecla==97 || tecla == 65){
+            pos = virarEsquerda(maze, pos);
+      }*/
 }
 
-void secondMode(int **maze, char tecla){ // 4 teclas.
+void secondMode(int **maze, char tecla){ /* 4 teclas.
+                                        (mover para a direita, esquerda,
+                                                                baixo e cima)*/
 
      if(tecla==119 || tecla == 87){
            pos = up(maze, pos);

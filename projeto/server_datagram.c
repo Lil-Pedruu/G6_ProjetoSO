@@ -46,20 +46,21 @@ void *receive(void *arg){
 /* Atualiza a posição do cursor */
 void *refresh(void *arg){
   if(mode==1){
-    //cbreak();
-    firstMode(maze, buf[0]);
+
+    firstMode(maze, buf[0]); // movimenta o cursor
     nocbreak();
   }
 
   if(mode==2){
-  //  cbreak();
-    secondMode(maze, buf[0]);
+
+    secondMode(maze, buf[0]); // movimenta o cursor
     nocbreak();
   }
 
   return NULL;
 }
 
+// MAIN
 void main(int argc, char* argv[]) // Iniciar server com indicação do modo (1 ou 2).
 {                                 // Exemplo: ./server 2
   int sock, length;
@@ -96,11 +97,16 @@ void main(int argc, char* argv[]) // Iniciar server com indicação do modo (1 o
   maze = ler(1, _argv); //retorna a matriz
 
   /* Modo de jogo. */
-  mode = atoi(argv[1]); // converte argumento do modo (string) para inteiro
+  mode = atoi(argv[1]); // converte argumento de (string) para inteiro
   mapa(maze, mode); // inicia o movimento do cursor utilizando a matriz
+  printf("^");
+  printf("\033[%dD",1); // movimenta para a esquerda
   nocbreak();
 
 //-----------------------------------------
+
+// Ciclo while -> Faz com que o Servidor esteja constantemente à espera de input
+//               pelo Cliente e faça a atualização logo de seguida.
   while(buf[0] != 112){ // 112 é o caracter 'p' na tabela ASCII. Usado para terminar o server.
   int len;
   struct sockaddr_in client;
