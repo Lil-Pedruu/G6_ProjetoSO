@@ -130,7 +130,7 @@ int virarDireita(int **maze, int cursorType){
 
     }
 
-    else if(cursorType==1){
+    else if(cursorType==1){ // type 1 = >
      printf(" ");
      printf("\033[%dD",1); // movimenta para a esquerda
      printf("v");
@@ -138,7 +138,7 @@ int virarDireita(int **maze, int cursorType){
 
    }
 
-   else if(cursorType==2){
+   else if(cursorType==2){ // type 2 = v
      printf(" ");
      printf("\033[%dD",1); // movimenta para a esquerda
      printf("<");
@@ -146,7 +146,7 @@ int virarDireita(int **maze, int cursorType){
 
    }
 
-   else if(cursorType==3){
+   else if(cursorType==3){ // type 3 =  <
      printf(" ");
      printf("\033[%dD",1); // movimenta para a esquerda
      printf("^");
@@ -155,18 +155,73 @@ int virarDireita(int **maze, int cursorType){
 
    return cursorType;
 }
-/*int *forward(int **maze, int*pos){
-  return null;
-}*/
+
+int virarEsquerda(int **maze, int cursorType){
+
+    if(cursorType==0){ // type 0 = ^
+      printf(" ");
+      printf("\033[%dD",1); // movimenta para a esquerda
+      printf("<");
+      printf("\033[%dD",1); // movimenta para a esquerda
+
+    }
+
+    else if(cursorType==1){ // type 1 = >
+     printf(" ");
+     printf("\033[%dD",1); // movimenta para a esquerda
+     printf("^");
+     printf("\033[%dD",1); // movimenta para a esquerda
+
+   }
+
+   else if(cursorType==2){ // type 2 = v
+     printf(" ");
+     printf("\033[%dD",1); // movimenta para a esquerda
+     printf(">");
+     printf("\033[%dD",1); // movimenta para a esquerda
+
+   }
+
+   else if(cursorType==3){ // type 3 =  <
+     printf(" ");
+     printf("\033[%dD",1); // movimenta para a esquerda
+     printf("v");
+     printf("\033[%dD",1); // movimenta para a esquerda
+   }
+
+   return cursorType;
+}
+
+int *forward(int **maze, int cursorType, int *pos){
+  if(cursorType==0){ // type 0 = ^
+    pos = up(maze, pos);
+
+  }
+
+  else if(cursorType==1){ // type 1 = >
+    pos = right(maze, pos);
+
+ }
+
+ else if(cursorType==2){ // type 2 = v
+    pos = down(maze, pos);
+
+ }
+
+ else if(cursorType==3){ // type 3 =  <
+    pos = left(maze, pos);
+ }
+ return pos;
+}
 
 void firstMode(int **maze, char tecla){ /* 3 teclas.
                                         (virar direita, virar esquerda
                                          e ir em frente) */
 
-  //    if(tecla==32){  /* Estes números decimais correspondem a caracteres da
-                                                              //  tabela ASCII */
-        //    pos = forward(maze, pos);
-//      }
+      if(tecla==119 || tecla==87){  /* Estes números decimais correspondem a caracteres da
+                                                           tabela ASCII */
+            forward(maze, cursorType, pos);
+      }
 
       if(tecla==100 || tecla == 68){
             virarDireita(maze, cursorType);
@@ -176,11 +231,26 @@ void firstMode(int **maze, char tecla){ /* 3 teclas.
             }
       }
 
+      if(tecla==97 || tecla == 65){
+            virarEsquerda(maze, cursorType);
+            (cursorType)--;
 
+            if(cursorType==-1){
+              cursorType=3;
+            }
 
-    /*  if(tecla==97 || tecla == 65){
-            pos = virarEsquerda(maze, pos);
-      }*/
+            if(cursorType==-2){
+              cursorType=2;
+            }
+
+            if(cursorType==-3){
+              cursorType=1;
+            }
+
+            if(cursorType==-4){
+              cursorType=0;
+            }
+      }
 }
 
 void secondMode(int **maze, char tecla){ /* 4 teclas.
