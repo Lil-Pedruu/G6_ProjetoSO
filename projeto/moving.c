@@ -265,18 +265,22 @@ void secondMode(int **maze, char tecla){ /* 4 teclas.
 
      if(tecla==119 || tecla == 87){
            pos = up(maze, pos);
+           cursorType = 0;
      }
 
      if(tecla==100 || tecla == 68){
            pos = right(maze, pos);
+           cursorType = 1;
      }
 
      if(tecla==97 || tecla == 65){
            pos = left(maze, pos);
+           cursorType = 3;
      }
 
      if(tecla==115 || tecla == 83){
            pos = down(maze, pos);
+           cursorType = 2;
      }
 
 
@@ -287,21 +291,73 @@ void secondMode(int **maze, char tecla){ /* 4 teclas.
 }*/
 
 char* getMazeInfo(int **maze){
-
-  if (maze[pos[1]-1][pos[0]-1] == 0){
+if(cursorType==0){
+  if (maze[pos[1]+1][pos[0]-1] == 0){
     memcpy(info, espaco, strlen(espaco));
   }
 
-  if (maze[pos[1]-1][pos[0]-1] == 1){
+  if (maze[pos[1]+1][pos[0]-1] == 1){
     memcpy(info, parede, strlen(parede));  }
 
-  if (maze[pos[1]-1][pos[0]-1] == 2){
+  if (maze[pos[1]+1][pos[0]-1] == 2){
     memcpy(info, start, strlen(start));
   }
 
-  if (maze[pos[1]-1][pos[0]-1] == 3){
+  if (maze[pos[1]+1][pos[0]-1] == 3){
     memcpy(info, goal, strlen(goal));
   }
+}
+
+if(cursorType==1){
+  if (maze[pos[1]-1][pos[0]+1] == 0){
+    memcpy(info, espaco, strlen(espaco));
+  }
+
+  if (maze[pos[1]-1][pos[0]+1] == 1){
+    memcpy(info, parede, strlen(parede));  }
+
+  if (maze[pos[1]-1][pos[0]+1] == 2){
+    memcpy(info, start, strlen(start));
+  }
+
+  if (maze[pos[1]-1][pos[0]+1] == 3){
+    memcpy(info, goal, strlen(goal));
+  }
+}
+
+if(cursorType==2){
+  if (maze[pos[1]-3][pos[0]-1] == 0){
+    memcpy(info, espaco, strlen(espaco));
+  }
+
+  if (maze[pos[1]-3][pos[0]-1] == 1){
+    memcpy(info, parede, strlen(parede));  }
+
+  if (maze[pos[1]-3][pos[0]-1] == 2){
+    memcpy(info, start, strlen(start));
+  }
+
+  if (maze[pos[1]-3][pos[0]-1] == 3){
+    memcpy(info, goal, strlen(goal));
+  }
+}
+
+if(cursorType==3){
+  if (maze[pos[1]-1][pos[0]-3] == 0){
+    memcpy(info, espaco, strlen(espaco));
+  }
+
+  if (maze[pos[1]-1][pos[0]-3] == 1){
+    memcpy(info, parede, strlen(parede));  }
+
+  if (maze[pos[1]-1][pos[0]-3] == 2){
+    memcpy(info, start, strlen(start));
+  }
+
+  if (maze[pos[1]-1][pos[0]-3] == 3){
+    memcpy(info, goal, strlen(goal));
+  }
+}
   return info;
 }
 
