@@ -8,3 +8,5 @@ int *left(int **maze, int *pos);
 int mapa(int **maze, int mode);
 void firstMode(int **maze, char tecla);
 void secondMode(int **maze, char tecla);
+//void autonomous(int **maze);
+char *getMazeInfo(int**maze);

@@ -2,6 +2,7 @@
 #include <unistd.h>
 #include <termios.h>
 #include <stdlib.h>
+#include <string.h>
 #define COLUMNS 67
 #define ROWS 32
 
@@ -12,6 +13,11 @@ static int *pos;
 static char tecla[128];
 static char *p = NULL;
 static int cursorType=0;
+static char info[1024];
+static char espaco[1024] = {'E','s','p','a','c','o',' ','v','a','z','i','o','.'};
+static char parede[1024] = {'P','a','r','e','d','e','.',' ',' ',' ',' ',' ',' '};
+static char start[1024] = {'S','t','a','r','t','.',' ',' ',' ',' ',' ',' ',' '};
+static char goal[1024] = {'G','o','a','l','.',' ',' ',' ',' ',' ',' ',' ',' '};
 
 /*Cria estruturas termios para armazenar os parametros e
 informações do terminal*/
@@ -275,6 +281,30 @@ void secondMode(int **maze, char tecla){ /* 4 teclas.
 
 
 }
+
+/*void autonomous((int **maze){
+
+}*/
+
+char* getMazeInfo(int **maze){
+
+  if (maze[pos[1]-1][pos[0]-1] == 0){
+    memcpy(info, espaco, strlen(espaco));
+  }
+
+  if (maze[pos[1]-1][pos[0]-1] == 1){
+    memcpy(info, parede, strlen(parede));  }
+
+  if (maze[pos[1]-1][pos[0]-1] == 2){
+    memcpy(info, start, strlen(start));
+  }
+
+  if (maze[pos[1]-1][pos[0]-1] == 3){
+    memcpy(info, goal, strlen(goal));
+  }
+  return info;
+}
+
 
 int mapa(int **maze, int mode){
    pos = malloc(sizeof(int*) * 2);

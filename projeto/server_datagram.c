@@ -38,13 +38,17 @@ typedef struct args {
 /* Receber a informação do client */
 void *receive(void *arg){
   args *args1 = (args *)arg;
+
   n = recvfrom(args1->sock, args1->buf, args1->size,
                 args1->msg, args1->client, &(args1->len));
+
   return NULL;
 }
 
 /* Atualiza a posição do cursor */
 void *refresh(void *arg){
+  args *args1 = (args *)arg;
+
   if(mode==1){
 
     firstMode(maze, buf[0]); // movimenta o cursor
@@ -57,11 +61,26 @@ void *refresh(void *arg){
     nocbreak();
   }
 
+  /*if(mode==3){
+    autonomous(maze); // Modo de movimento autonomo do cursor/mouse.
+    nocbreak();
+  }*/
+
+  char buffer[1024];
+
+//  buffer = getMazeInfo(maze);
+  sendto(args1->sock, (char *)getMazeInfo(maze), args1->size,
+                args1->msg, args1->client, args1->len);
+
+  /*sendto(sock, (const char *)answer, strlen(answer),
+        MSG_CONFIRM, (const struct sockaddr *) &client,
+            len);    */
+
   return NULL;
 }
 
 // MAIN
-void main(int argc, char* argv[]) // Iniciar server com indicação do modo (1 ou 2).
+void main(int argc, char* argv[]) // Iniciar server com indicação do modo (1, 2 ou 3).
 {                                 // Exemplo: ./server 2
   int sock, length;
   struct sockaddr_in name;
@@ -74,7 +93,7 @@ void main(int argc, char* argv[]) // Iniciar server com indicação do modo (1 o
   /* Create name with wildcards. */
   name.sin_family = AF_INET;
   name.sin_addr.s_addr = INADDR_ANY;
-  name.sin_port = ntohs(12345);
+  name.sin_port = ntohs(12345); // Port Number.
 
   if (bind(sock,(struct sockaddr *)&name, sizeof name) == -1) {
     perror("binding datagram socket");
@@ -102,7 +121,6 @@ void main(int argc, char* argv[]) // Iniciar server com indicação do modo (1 o
   printf("^");
   printf("\033[%dD",1); // movimenta para a esquerda
   nocbreak();
-
 //-----------------------------------------
 
 // Ciclo while -> Faz com que o Servidor esteja constantemente à espera de input
@@ -133,8 +151,8 @@ void main(int argc, char* argv[]) // Iniciar server com indicação do modo (1 o
   /* Criar segunda thread (atualiza informação). */
   void *status2;
   pthread_t p2;
-  pthread_create(&p2,NULL,refresh,NULL);  // Atualiza a posição do cursor.
-  pthread_join(p2,&status2);
+  pthread_create(&p2,NULL,refresh,&args1);  // Atualiza a posição do cursor
+  pthread_join(p2,&status2);              // e envia informação ao Cliente.
 }
 
   printf("Fim do server");
