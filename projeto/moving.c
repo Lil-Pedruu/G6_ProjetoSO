@@ -257,6 +257,11 @@ void firstMode(int **maze, char tecla){ /* 3 teclas.
               cursorType=0;
             }
       }
+
+      if (maze[pos[1]-1][pos[0]-1] == 3){ //Se chegar à posição do G o jogo acaba
+        printf("\033[34;0HYOU WIN! Prima 'p' no Cliente para encerrar o Servidor.\n");
+
+         }
 }
 
 void secondMode(int **maze, char tecla){ /* 4 teclas.
@@ -283,11 +288,22 @@ void secondMode(int **maze, char tecla){ /* 4 teclas.
            cursorType = 2;
      }
 
+     if (maze[pos[1]-1][pos[0]-1] == 3){ //Se chegar à posição do G o jogo acaba
+           printf("\033[34;0HYOU WIN! Prima 'p' no Cliente para encerrar o Servidor.\n");
+        }
+
 
 }
 
 /*void autonomous((int **maze){
 
+
+
+
+
+    if (maze[pos[1]-1][pos[0]-1] == 3){ //Se chegar à posição do G o jogo acaba
+          printf("\033[34;0HYOU WIN!");
+       }
 }*/
 
 char* getMazeInfo(int **maze){
@@ -375,8 +391,8 @@ int mapa(int **maze, int mode){
    }
    printf("\033[%d;%dH",ROWS+2-pos[1],pos[0]); //coloca o cursor na posição do S
 
-     if (maze[pos[1]-1][pos[0]-1] == 3){ //Se chegar à posição do G o jogo acaba
+  /*   if (maze[pos[1]-1][pos[0]-1] == 3){ //Se chegar à posição do G o jogo acaba
         printf("\033[34;0HYOU WIN!");
-     }
+     }*/
 
 }

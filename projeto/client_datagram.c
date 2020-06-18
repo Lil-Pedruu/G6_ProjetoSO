@@ -48,10 +48,17 @@ void main(int argc, char* argv[])
     exit(2);
   }
 
+  cbreak();
+  printf("Prima 'p' para encerrar o Servidor.\n");
+
   /* Send message to Server. */
   char tecla[128];
+  char c;
   printf("Tecla: ");
-  scanf("%s", tecla);
+  
+  c = getchar();
+  tecla[0 ]= c;
+//  scanf("%s", tecla);
 
   /* fica a enviar datagramas enquanto não é escrito 'p' */
   while (tecla != "p"){
@@ -60,7 +67,10 @@ void main(int argc, char* argv[])
     perror("sending datagram message");
 
     printf("\n\nTecla: ");
-    scanf("%s", tecla);
+
+    c = getchar();
+    tecla[0] = c;
+//    scanf("%s", tecla);
 
     // Receiving a message from the Server.
     int n,len;
@@ -72,7 +82,7 @@ void main(int argc, char* argv[])
                   &len);
 
     buffer[n] = '\0';
-    printf("Server: ");
+    printf("\nServer: ");
 
     int i;
     for(i = 0; i < sizeof(buffer); i++)

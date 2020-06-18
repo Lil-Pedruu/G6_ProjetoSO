@@ -68,13 +68,8 @@ void *refresh(void *arg){
 
   char buffer[1024];
 
-//  buffer = getMazeInfo(maze);
   sendto(args1->sock, (char *)getMazeInfo(maze), args1->size,
                 args1->msg, args1->client, args1->len);
-
-  /*sendto(sock, (const char *)answer, strlen(answer),
-        MSG_CONFIRM, (const struct sockaddr *) &client,
-            len);    */
 
   return NULL;
 }
