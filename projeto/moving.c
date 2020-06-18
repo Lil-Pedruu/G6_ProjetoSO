@@ -295,16 +295,7 @@ void secondMode(int **maze, char tecla){ /* 4 teclas.
 
 }
 
-/*void autonomous((int **maze){
 
-
-
-
-
-    if (maze[pos[1]-1][pos[0]-1] == 3){ //Se chegar à posição do G o jogo acaba
-          printf("\033[34;0HYOU WIN!");
-       }
-}*/
 
 char* getMazeInfo(int **maze){
 if(cursorType==0){
@@ -377,6 +368,27 @@ if(cursorType==3){
   return info;
 }
 
+void autonomous(int **maze, int cursorType){ // Modo automático. Cursor move-se
+    char* info;                             //                          sozinho.
+    info = getMazeInfo(maze);
+
+    if(info=="Espaco vazio."|| info=="Goal.        "){
+      forward(maze, cursorType, pos);
+    }
+
+    else{
+      virarDireita(maze, cursorType);
+      (cursorType)++;
+      if(cursorType==4){
+        cursorType=0;
+      }
+      autonomous(maze, cursorType);
+    }
+
+    if (maze[pos[1]-1][pos[0]-1] == 3){ //Se chegar à posição do G o jogo acaba
+          printf("\033[34;0HYOU WIN!");
+       }
+}
 
 int mapa(int **maze, int mode){
    pos = malloc(sizeof(int*) * 2);

@@ -54,11 +54,9 @@ void main(int argc, char* argv[])
   /* Send message to Server. */
   char tecla[128];
   char c;
-  printf("Tecla: ");
-  
+
   c = getchar();
   tecla[0 ]= c;
-//  scanf("%s", tecla);
 
   /* fica a enviar datagramas enquanto não é escrito 'p' */
   while (tecla != "p"){
@@ -66,11 +64,8 @@ void main(int argc, char* argv[])
     if (sendto(sock, DATA, sizeof DATA , 0, hp->ai_addr, hp->ai_addrlen) == -1)
     perror("sending datagram message");
 
-    printf("\n\nTecla: ");
-
     c = getchar();
     tecla[0] = c;
-//    scanf("%s", tecla);
 
     // Receiving a message from the Server.
     int n,len;
@@ -82,26 +77,12 @@ void main(int argc, char* argv[])
                   &len);
 
     buffer[n] = '\0';
-    printf("\nServer: ");
+    printf("\n\n// Server: ");
 
     int i;
     for(i = 0; i < sizeof(buffer); i++)
       printf("%c", buffer[i]);
     }
-
-
-/*  // Receiving a message from the Server.
-  int n,len;
-  char buffer[1024];
-  struct sockaddr_in server;
-
-  n = recvfrom(sock, (char *)buffer, 1024,
-                MSG_WAITALL, (struct sockaddr *) &server, // jp->ai_addr server???
-                &len);
-
-  buffer[n] = '\0';
-  printf("Server : %s\n", buffer);*/
-
 
   close(sock);
   exit(0 );

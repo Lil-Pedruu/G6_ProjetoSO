@@ -61,10 +61,10 @@ void *refresh(void *arg){
     nocbreak();
   }
 
-  /*if(mode==3){
+/*  if(mode==3){
     autonomous(maze); // Modo de movimento autonomo do cursor/mouse.
     nocbreak();
-  }*/
+  } */
 
   char buffer[1024];
 
