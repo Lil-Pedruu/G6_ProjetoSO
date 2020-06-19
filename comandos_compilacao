@@ -1,0 +1,2 @@
+gcc -o server server_datagram.c reading.c moving.c -pthread
+gcc -o client client_datagram.c reading.c moving.c
