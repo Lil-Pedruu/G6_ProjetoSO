@@ -58,7 +58,7 @@ void main(int argc, char* argv[])
   c = getchar();
   tecla[0 ]= c;
 
-  /* fica a enviar datagramas enquanto não é escrito 'p' */
+  /* fica a enviar e a receber datagramas enquanto não é escrito 'p' */
   while (tecla != "p"){
     #define DATA tecla
     if (sendto(sock, DATA, sizeof DATA , 0, hp->ai_addr, hp->ai_addrlen) == -1)

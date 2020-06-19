@@ -75,7 +75,7 @@ void *refresh(void *arg){
 }
 
 // MAIN
-void main(int argc, char* argv[]) // Iniciar server com indicação do modo (1, 2 ou 3).
+void main(int argc, char* argv[]) // Iniciar server com indicação do modo (1 ou 2).
 {                                 // Exemplo: ./server 2
   int sock, length;
   struct sockaddr_in name;

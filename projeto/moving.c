@@ -125,7 +125,7 @@ int *left(int **maze, int *pos){
 }
 
 
-
+/* Função que serve para "girar" o cursor para a direita, depende da sua orientação atual.*/
 int virarDireita(int **maze, int cursorType){
 
     if(cursorType==0){ // type 0 = ^
@@ -162,6 +162,7 @@ int virarDireita(int **maze, int cursorType){
    return cursorType;
 }
 
+/* Função que serve para "girar" o cursor para a esquerda, depende da sua orientação atual. */
 int virarEsquerda(int **maze, int cursorType){
 
     if(cursorType==0){ // type 0 = ^
@@ -198,6 +199,7 @@ int virarEsquerda(int **maze, int cursorType){
    return cursorType;
 }
 
+/* Função que serve para mover o cursor em frente, dependendo da sua orientação atual. */
 int *forward(int **maze, int cursorType, int *pos){
   if(cursorType==0){ // type 0 = ^
     pos = up(maze, pos);
@@ -219,13 +221,13 @@ int *forward(int **maze, int cursorType, int *pos){
  }
  return pos;
 }
+//                                          W, A, D
+void firstMode(int **maze, char tecla){ /* 3 teclas.(virar direita, virar esquerda
+                                                              e ir em frente) */
 
-void firstMode(int **maze, char tecla){ /* 3 teclas.
-                                        (virar direita, virar esquerda
-                                         e ir em frente) */
+      if(tecla==119 || tecla==87){  /* Estes números decimais correspondem a
+                                                caracteres da tabela ASCII */
 
-      if(tecla==119 || tecla==87){  /* Estes números decimais correspondem a caracteres da
-                                                           tabela ASCII */
             forward(maze, cursorType, pos);
       }
 
@@ -263,10 +265,9 @@ void firstMode(int **maze, char tecla){ /* 3 teclas.
 
          }
 }
-
-void secondMode(int **maze, char tecla){ /* 4 teclas.
-                                        (mover para a direita, esquerda,
-                                                                baixo e cima)*/
+//                                           W,A,S,D
+void secondMode(int **maze, char tecla){ /* 4 teclas. (mover para a direita, esquerda,
+                                                                 baixo e cima)*/
 
      if(tecla==119 || tecla == 87){
            pos = up(maze, pos);
@@ -296,7 +297,7 @@ void secondMode(int **maze, char tecla){ /* 4 teclas.
 }
 
 
-
+/* Retorna o que está à frente do mouse/cursor, Espaço vazio, Parede, Start ou Goal. */
 char* getMazeInfo(int **maze){
 if(cursorType==0){
   if (maze[pos[1]+1][pos[0]-1] == 0){
@@ -368,8 +369,8 @@ if(cursorType==3){
   return info;
 }
 
-void autonomous(int **maze, int cursorType){ // Modo automático. Cursor move-se
-    char* info;                             //                          sozinho.
+void autonomous(int **maze){ // Modo automático. Cursor move-se sozinho.
+    char* info;
     info = getMazeInfo(maze);
 
     if(info=="Espaco vazio."|| info=="Goal.        "){
@@ -382,7 +383,7 @@ void autonomous(int **maze, int cursorType){ // Modo automático. Cursor move-se
       if(cursorType==4){
         cursorType=0;
       }
-      autonomous(maze, cursorType);
+      autonomous(maze);
     }
 
     if (maze[pos[1]-1][pos[0]-1] == 3){ //Se chegar à posição do G o jogo acaba
