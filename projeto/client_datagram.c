@@ -73,7 +73,7 @@ void main(int argc, char* argv[])
     struct sockaddr_in server;
 
     n = recvfrom(sock, (char *)buffer, 1024,
-                  MSG_WAITALL, (struct sockaddr *) &server, // jp->ai_addr server???
+                  MSG_WAITALL, (struct sockaddr *) &server, 
                   &len);
 
     buffer[n] = '\0';

@@ -20,8 +20,16 @@
 * This program creates a datagram socket, binds a name to it, then
 * reads from the socket.
 */
-static int n;
-static int mode;
+
+// Ferrolhos.
+pthread_mutex_t mutex_1 = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t mutex_2 = PTHREAD_MUTEX_INITIALIZER;
+
+// Variáveis condição.
+pthread_cond_t cond_1  = PTHREAD_COND_INITIALIZER;
+pthread_cond_t cond_2  = PTHREAD_COND_INITIALIZER;
+
+static int c, n, d, mode, sock;
 static char buf[1024];
 static int **maze;
 
@@ -39,9 +47,25 @@ typedef struct args {
 void *receive(void *arg){
   args *args1 = (args *)arg;
 
-  n = recvfrom(args1->sock, args1->buf, args1->size,
-                args1->msg, args1->client, &(args1->len));
+  while(1){
+  pthread_mutex_lock(&mutex_1);
+      while(d!=1){
+      pthread_cond_wait(&cond_2, &mutex_1);
+      }
 
+      n = recvfrom(args1->sock, args1->buf, args1->size,
+                    args1->msg, args1->client, &(args1->len));
+     if(buf[0]==112){
+        printf("Fim do server.\n");
+        close(sock);
+        exit(0);
+        }
+      buf[n] = '\0';
+
+      c=1;
+      pthread_cond_signal(&cond_1);
+      pthread_mutex_unlock(&mutex_1);
+      }
   return NULL;
 }
 
@@ -49,35 +73,45 @@ void *receive(void *arg){
 void *refresh(void *arg){
   args *args1 = (args *)arg;
 
-  if(mode==1){
+  while(1){
+  pthread_mutex_lock(&mutex_2);
+      while(c!=1){
+      pthread_cond_wait(&cond_1, &mutex_2);
+      }
 
-    firstMode(maze, buf[0]); // movimenta o cursor
-    nocbreak();
+      if(mode==1){
+
+        firstMode(maze, buf[0]); // movimenta o cursor
+        nocbreak();
+      }
+
+      if(mode==2){
+
+        secondMode(maze, buf[0]); // movimenta o cursor
+        nocbreak();
+      }
+
+      /*if(mode==3){
+          autonomous(maze); // Modo de movimento autonomo do cursor/mouse.
+          nocbreak();
+        } */
+
+      sendto(args1->sock, (char *)getMazeInfo(maze), args1->size,
+                    args1->msg, args1->client, args1->len);
+      buf[0]=0;
+
+      c=0;
+      d=1;
+      pthread_cond_signal(&cond_2);
+      pthread_mutex_unlock(&mutex_2);
   }
-
-  if(mode==2){
-
-    secondMode(maze, buf[0]); // movimenta o cursor
-    nocbreak();
-  }
-
-/*  if(mode==3){
-    autonomous(maze); // Modo de movimento autonomo do cursor/mouse.
-    nocbreak();
-  } */
-
-  char buffer[1024];
-
-  sendto(args1->sock, (char *)getMazeInfo(maze), args1->size,
-                args1->msg, args1->client, args1->len);
-
   return NULL;
 }
 
 // MAIN
 void main(int argc, char* argv[]) // Iniciar server com indicação do modo (1 ou 2).
 {                                 // Exemplo: ./server 2
-  int sock, length;
+  int length;
   struct sockaddr_in name;
   /* Create socket from which to read. */
   sock = socket(AF_INET, SOCK_DGRAM, 0);
@@ -118,9 +152,6 @@ void main(int argc, char* argv[]) // Iniciar server com indicação do modo (1 o
   nocbreak();
 //-----------------------------------------
 
-// Ciclo while -> Faz com que o Servidor esteja constantemente à espera de input
-//               pelo Cliente e faça a atualização logo de seguida.
-  while(buf[0] != 112){ // 112 é o caracter 'p' na tabela ASCII. Usado para terminar o server.
   int len;
   struct sockaddr_in client;
   len = sizeof(client);
@@ -135,22 +166,13 @@ void main(int argc, char* argv[]) // Iniciar server com indicação do modo (1 o
   args1.client = ( struct sockaddr *) &client;
   args1.len = len;
 
-  /* Criar primeira thread (recebe informação). */
-  void *status1;
-  pthread_t p1;
-  pthread_create(&p1,NULL,receive,&args1); //Read from the socket
-  pthread_join(p1,&status1);
 
-  buf[n] = '\0';
-
-  /* Criar segunda thread (atualiza informação). */
-  void *status2;
-  pthread_t p2;
-  pthread_create(&p2,NULL,refresh,&args1);  // Atualiza a posição do cursor
-  pthread_join(p2,&status2);              // e envia informação ao Cliente.
-}
-
-  printf("Fim do server");
-  close(sock);
-  exit(0);
+  void *status1, *status2; // Aponta para o retornos das threads.
+  pthread_t p1, p2; // Threads.
+  d=1;
+  pthread_create(&p1,NULL,receive,&args1); // Recebe info do Cliente.
+  pthread_create(&p2,NULL,refresh,&args1); // Atualiza e envia info ao Cliente.
+  pthread_join(p1,&status1); // Suspende as threads e ajuda a main thread a esperar que as threads p1
+  pthread_join(p2,&status2); // e p2 terminem a sua execução, ou seja, só depois
+                            // de as threads terminarem é que o código pode seguir.
 }
