@@ -61,7 +61,7 @@ void *receive(void *arg){
         exit(0);
         }
       buf[n] = '\0';
-
+      d=0;
       c=1;
       pthread_cond_signal(&cond_1);
       pthread_mutex_unlock(&mutex_1);
