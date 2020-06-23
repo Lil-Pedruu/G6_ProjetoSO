@@ -36,7 +36,7 @@ static int **maze;
 /* Estrutura com atributos a serem usados pela função recvfrom() */
 typedef struct args {
   int sock;
-  char* buf;
+  char buf[1024];
   int size;
   struct sockaddr *client;
   int len;
@@ -49,12 +49,14 @@ void *receive(void *arg){
 
   while(1){
   pthread_mutex_lock(&mutex_1);
-      while(d!=1){
+      while(d==0){
       pthread_cond_wait(&cond_2, &mutex_1);
       }
 
       n = recvfrom(args1->sock, args1->buf, args1->size,
                     args1->msg, args1->client, &(args1->len));
+
+    strcpy(buf,args1->buf);                    
      if(buf[0]==112){
         printf("Fim do server.\n");
         close(sock);
@@ -62,7 +64,7 @@ void *receive(void *arg){
         }
       buf[n] = '\0';
       d=0;
-      c=1;
+
       pthread_cond_signal(&cond_1);
       pthread_mutex_unlock(&mutex_1);
       }
@@ -74,9 +76,9 @@ void *refresh(void *arg){
   args *args1 = (args *)arg;
 
   while(1){
-  pthread_mutex_lock(&mutex_2);
-      while(c!=1){
-      pthread_cond_wait(&cond_1, &mutex_2);
+  pthread_mutex_lock(&mutex_1);
+      while(d==1){
+      pthread_cond_wait(&cond_1, &mutex_1);
       }
 
       if(mode==1){
@@ -100,10 +102,10 @@ void *refresh(void *arg){
                     args1->msg, args1->client, args1->len);
       buf[0]=0;
 
-      c=0;
+
       d=1;
       pthread_cond_signal(&cond_2);
-      pthread_mutex_unlock(&mutex_2);
+      pthread_mutex_unlock(&mutex_1);
   }
   return NULL;
 }
@@ -160,7 +162,7 @@ void main(int argc, char* argv[]) // Iniciar server com indicação do modo (1 o
      para serem usados na função recvfrom() que vai receber a informação. */
   args args1;
   args1.sock = sock;
-  args1.buf = (char *)buf;
+//  args1.buf = (char *)buf;
   args1.size = 1024;
   args1.msg = MSG_WAITALL;
   args1.client = ( struct sockaddr *) &client;
